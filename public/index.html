@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="A currency converter for quick view and comparison of live current & historical exchange rates between all globally recognized currencies and commodities." />
+	  <meta property="og:image" content="https://infinityconverter.herokuapp.com/img/social.png" />
+	  <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
+	<!--	<meta name="robots" content="noindex, nofollow"> -->
+    <meta name="theme-color" content="#a855f7">
+    <link rel="icon" href="img/icon.png">
+    <title>Infinity Converter</title>
+    <script type="text/javascript">
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark')
+    document.querySelector('meta[name=theme-color]').setAttribute("content", "#342345")
+} else {
+  document.documentElement.classList.remove('dark')
+  document.querySelector('meta[name=theme-color]').setAttribute("content", "#a855f7")
+}
+
+//code to show helper tooltips for first time app usage
+function helper() {
+  if ((!('firstView' in localStorage))){
+    setTimeout(function() {
+      document.querySelector('.helpers').style.display = "inline-block"
+      document.querySelector('.bh').style.display = "inline-block"
+      localStorage.firstView = "1"
+
+      setTimeout(function() {
+        document.querySelector('.helpers').style.display = "none"
+        document.querySelector('.bh').style.display = "none"
+      }, 7000);
+    }, 3000)
+  }
+}
+    </script>
+  </head>
+  <body class="bg-gradient-to-tl from-purple-700 to-purple-500 dark:from-[#06020a] dark:to-[#381c52] w-full h-full select-none overflow-none p-0 m-0" onload="helper()">
+    <noscript>
+      <strong>We're sorry but Infinity Converter doesn't work without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></di>
+  </body>
+</html>
