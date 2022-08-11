@@ -36,7 +36,7 @@ npm run build
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-## FAQ's
+<br>
+Feel free to fork and contribute to this repository.
 
-* If you have any questions or corrections, feel free to fork this repository or open an issue.
-* For any other concerns, email at <a href="mailto:mk.artisticlogic@gmail.com" target="_blank">mk.artisticlogic@gmail.com</a>.
+For any other concerns, email at <a href="mailto:mk.artisticlogic@gmail.com" target="_blank">mk.artisticlogic@gmail.com</a>.
