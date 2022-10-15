@@ -2,7 +2,7 @@
 node_modules
 /dist
 /deploy
-
+android
 
 # local env files
 .env.local

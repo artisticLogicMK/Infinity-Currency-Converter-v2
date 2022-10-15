@@ -1,3 +1,35 @@
+<script setup>
+import { useStore } from 'vuex'
+import { onMounted, ref } from 'vue'
+
+    const store = useStore()
+    
+    const currencyList =  ref()
+    
+    //search value
+    const input = ref('')
+    
+    
+    //list search: filter by input
+    const search = () => {
+      currencyList.value = store.state.currencyList
+      currencyList.value = currencyList.value.filter((c) => c.code.toLowerCase().includes( input.value.toLowerCase()) || c.name.toLowerCase().includes(input.value.toLowerCase()) )
+    }
+    
+
+    const changeBaseCurrency = (currency) => {
+      store.commit('selectCurrency', currency)
+      store.commit('toggleCurrencyMenu')
+      store.dispatch('convertRollup')
+    }
+
+
+    onMounted(() => {
+      currencyList.value = store.state.currencyList
+    })
+</script>
+
+
 <template>
   <!--currency list right-->
   <div
@@ -54,41 +86,3 @@
     
   </div>
 </template>
-
-<script>
-import { useStore } from 'vuex'
-import { ref, computed, onMounted, watch } from 'vue'
-
-export default {
-  setup() {
-    const store = useStore()
-    
-    const currencyList =  ref()
-    
-    watch(() => {
-      currencyList.value = store.state.currencyList
-    })
-    
-    //search value
-    const input = ref('')
-    
-    //list search: filter by input
-    const search = () => {
-      currencyList.value = store.state.currencyList
-      currencyList.value = currencyList.value.filter((c) => c.code.toLowerCase().includes( input.value.toLowerCase()) || c.name.toLowerCase().includes(input.value.toLowerCase()) )
-    }
-    
-    const changeBaseCurrency = (currency) => {
-      store.commit('selectCurrency', currency)
-      store.commit('toggleCurrencyMenu')
-      store.dispatch('convertRollup')
-    }
-    
-    onMounted( () => {
-        
-    })
-    
-    return { currencyList, input, search, changeBaseCurrency }
-  }
-}
-</script>

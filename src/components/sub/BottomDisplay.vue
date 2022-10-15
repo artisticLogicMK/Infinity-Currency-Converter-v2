@@ -1,3 +1,25 @@
+<script>
+import { useStore } from 'vuex'
+
+export default {
+  setup() {
+    const store = useStore()
+
+    //when add currency is clicked
+    const changeBaseCurrency = (currency) => {
+    //add currency to convertedCurrency list in store
+      store.commit('selectCurrency', currency)
+
+      //refetch result of currenies in conversion list
+      store.dispatch('convertRollup')
+    }
+    
+    return { changeBaseCurrency }
+  }
+}
+</script>
+
+
 <template>
   <!--bottom-->
   <div class="grow bg-white/90 dark:bg-[#342345]/90 xsm:rounded-b-xl h-full relative" id="base" style="min-height:350px">
@@ -9,15 +31,16 @@
       <i class="fa fa-play fa-rotate-90 text-white dark:text-[#573975] -ml-16"></i>
     </div>
     
+
     <div
       class="flex w-full items-center justify-between border-b dark:border-white/[.10] px-2 pb-2.5 pt-2"
       v-for="currency in $store.state.convertedCurrencies"
       :key="currency.result"
     >
 
-      <div class="inline-flex flex-wrap items-center justify-center">
+      <div class="inline-flex flex-wrap items-center justify-center group">
         <div class="cursor-pointer" @click="changeBaseCurrency(currency)">
-          <i class="fa fa-long-arrow-up text-gray-400/90 dark:text-white/[.50] text-lg mr-1"></i>
+          <i class="fa fa-long-arrow-up group-active:-translate-y-4 duration-300 text-gray-400/90 dark:text-white/[.50] text-lg mr-1"></i>
         </div>
         <div class="cursor-pointer" @click="changeBaseCurrency(currency)">
           <img :src="'/img/flags/'+currency.flagImg" class="w-8">
@@ -27,6 +50,7 @@
           <div class="text-sm leading-none w-28 lg:w-32 truncate hidden mic:inline text-gray-500/[.70] dark:text-white/[.55]">{{ currency.name }}</div>
         </div>
       </div>
+
 
       <div class="fle flex-wrap items-center">
           <div class="text-right">
@@ -57,7 +81,7 @@
         leave-active-class="animate__animated animate__zoomOut animate__faster"
       >  
         <div class="text-sm text-gray-500 dark:text-white -mt-2 mb-2 font-semibold" v-if="$store.state.currencyMax">
-          Max of 6 active currencies allowed. Remove a currency to add another.
+          Maximum of 6 active currencies permitted. To add another, remove one.
         </div>
       </Transition>
       <Transition enter-active-class="animate__animated animate__slideInUp animate__faster">
@@ -75,24 +99,3 @@
 
   </div>
 </template>
-
-<script>
-import { useStore } from 'vuex'
-
-export default {
-  setup() {
-    const store = useStore()
-
-    //when add currency is clicked
-    const changeBaseCurrency = (currency) => {
-    //add currency to convertedCurrency list in store
-      store.commit('selectCurrency', currency)
-
-      //refetch result of currenies in conversion list
-      store.dispatch('convertRollup')
-    }
-    
-    return { changeBaseCurrency }
-  }
-}
-</script>

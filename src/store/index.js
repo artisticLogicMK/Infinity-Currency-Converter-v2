@@ -3,8 +3,8 @@ import axios from 'axios'
 
 export default createStore({
   state: {
-    amount: 1,
-    currencyList: [],
+    amount: 1, //conversion input value
+    currencyList: [], //store list of currencies for select
 
     //The default base currency
     baseCurrency: {
@@ -13,8 +13,7 @@ export default createStore({
       code: "USD"
     },
 
-    //converted currencies in list
-    convertedCurrencies: [],
+    convertedCurrencies: [], //converted currencies in list
 
     //history rate of selected currency
     openHistory: {
@@ -29,13 +28,13 @@ export default createStore({
       invoker: ''
     },
 
-    //toggle about menu display
+    //store 'about menu' display state
     aboutMenu: false,
 
-    //state for error display when requests fails
+    //stateto indicate error when any request fails
     error: false,
 
-    //warning display when currency select exceeds max allowed
+    //state of warning display when currency select exceeds max allowed
     currencyMax: false
   },
   
@@ -57,12 +56,12 @@ export default createStore({
       }
       
       if(state.currencyMenu.invoker == 'newcurrency') {
-        //if error is in display before, hide it
+        //hide error display if present
         state.error = false
         
-        //checks if currencies are not more than 6
+        //checks if currencies in list !> 6
         if(state.convertedCurrencies.length <= 5) {
-          //chek if selected currency not alredy in converted list & base currency is not selected
+          //check if selected currency not alredy in converted list & base currency is not selected
           if(!state.convertedCurrencies.includes(currency)) {
             axios.get("https://api.exchangerate.host/convert?from="+state.baseCurrency.code+"&to="+currency.code+"&amount="+state.amount)
             .then((res) => {
@@ -127,6 +126,7 @@ export default createStore({
         })
       })
     },
+    
     
     setTheme(store, mode) {
       const doc = document.documentElement

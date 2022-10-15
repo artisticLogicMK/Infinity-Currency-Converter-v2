@@ -1,3 +1,56 @@
+<script setup>
+import { useStore } from 'vuex'
+import { ref, onMounted, watch } from 'vue'
+
+
+const store = useStore()
+const amount = ref(1)
+
+watch(amount, () => {
+
+  //allow only numbers and decimal point
+  let clean = amount.value.toString().replace(/[^0-9.]/g, '')
+
+  //change base currency amount in store
+  store.commit('changeAmount', clean)
+
+  //[input display] if [.] is pressed, remove value after point
+  //and then reformat the string and add back value after [.]
+  if(clean.includes('.')){
+    amount.value = clean.split('.')[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'.'+clean.substr(clean.indexOf('.') + 1)
+
+  //if no point detected, just reformat string only
+  }else{
+    amount.value = clean.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  //run store action to recalculate the value of all currencies on list based on changed amount
+  store.dispatch('convertRollup')
+})
+
+
+//when increament button is pressed
+const increaseAmount = () => {
+  if(! /^[.]+$/.test(amount.value)) {
+    amount.value = (Number(amount.value.toString().replace(/[^0-9]/g, '')) + 1).toLocaleString()
+  }
+}
+
+
+//when decreament button is pressed
+const decreaseAmount = () => {
+  if(amount.value !== '0' && amount.value !== '' && ! /^[.]+$/.test(amount.value)) {
+    amount.value = (Number(amount.value.toString().replace(/[^0-9]/g, '')) - 1).toLocaleString()
+  } 
+}
+
+
+onMounted(() => {
+  amount.value = store.state.amount
+})
+</script>
+
+
 <template>
   <!--responsive nav-->
   <div
@@ -10,19 +63,20 @@
       </div>
         
       <div
-        class="mr-3 mt-2 cursor-pointer hover:scale-[1.1]"
+        class="bars"
         @click="$store.commit('toggleAboutMenu')"
       >
-        <div class="h-0.5 w-6 mb-1.5 bg-white dark:bg-white/75"></div>
-        <div class="h-0.5 w-6 mb-1.5 bg-white dark:bg-white/75"></div>
-        <div class="h-0.5 w-6 mb-1.5 bg-white dark:bg-white/75"></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </div>
+
 
     <!--base currency-->
     <div
       id="base"
-      class="inline-flex flex-wrap items-center justify-center cursor-pointer mx-auto text-left relative pointer-events-auto"
+      class="inline-flex flex-wrap items-center justify-center cursor-pointer mx-auto text-left relative pointer-events-auto group"
       @click="$store.commit('toggleCurrencyMenu', 'base')"
     >
       <div class="helpers absolute top-full inline text-center leading-none pointer-events-none hidden z-10">
@@ -33,7 +87,7 @@
       </div>
       
       <div>
-        <i class="fa fa-caret-left text-white dark:text-white/[80] text-xl mr-1"></i>
+        <i class="fa fa-caret-left text-white dark:text-white/[80] text-xl mr-1 group-active:-translate-x-4 duration-300"></i>
       </div>
       <div>
         <img :src="'/img/flags/'+$store.state.baseCurrency.flagImg" class="w-8">
@@ -52,11 +106,14 @@
       </div>
     </div>
 
+
     <!--value-->
     <div class="w-full mt-3 text-center flex justify-center items-center">
-      <i class="fa fa-minus-circle text-2xl text-white/[.40] dark:text-white/25 leading-none cursor-pointer hover:opacity-75 active:scale-[1.2]" @click="substractAmount" @mousewheel="substractAmount"></i>
+      <i class="fa fa-minus-circle text-2xl text-white/[.40] dark:text-white/25 leading-none cursor-pointer hover:opacity-75 active:scale-[1.2]" @click="decreaseAmount" @mousewheel="decreaseAmount"></i>
+
       <input type="text" class="text-white dark:text-white/90 border-none bg-transparent outline-none text-center text-base font-semibold font-mono w-3/6 mx-1 bg-re-400" maxlength="15" autocomplete="off" autofocus="true" v-model="amount">
-      <i class="fa fa-plus-circle text-2xl text-white/[.40] dark:text-white/25 leading-none cursor-pointer hover:opacity-75 active:scale-[1.2]" @click="addAmount" @mousewheel="addAmount"></i>
+
+      <i class="fa fa-plus-circle text-2xl text-white/[.40] dark:text-white/25 leading-none cursor-pointer hover:opacity-75 active:scale-[1.2]" @click="increaseAmount" @mousewheel="increaseAmount"></i>
     </div>
     
   </div>
@@ -66,55 +123,8 @@
 
 </template>
 
-<script>
-import { useStore } from 'vuex'
-import { ref, onMounted, watch } from 'vue'
 
-export default {
-  setup() {
-    const store = useStore()
-    const amount = ref(1)
-    
-    watch(amount, () => {
-
-      //allow only numbers and decimal point
-      let clean = amount.value.toString().replace(/[^0-9.]/g, '')
-
-      //change ase currency amount in store
-      store.commit('changeAmount', clean)
-
-      //[input display] if point is pressed, remove value after point and then reformat the string and add back value after point
-      if(clean.includes('.')){
-        amount.value = clean.split('.')[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'.'+clean.substr(clean.indexOf('.') + 1)
-
-      //if no point detected, just reformat string only
-      }else{
-        amount.value = clean.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      }
-
-      //run store action to recalculate the value of all currencies on list based on changed amount
-      store.dispatch('convertRollup')
-    })
-
-    //when add button is pressed
-    const addAmount = () => {
-      if(! /^[.]+$/.test(amount.value)) {
-        amount.value = (Number(amount.value.toString().replace(/[^0-9]/g, '')) + 1).toLocaleString()
-      }
-    }
-
-    //when sustract button is pressed
-    const substractAmount = () => {
-      if(amount.value !== '0' && amount.value !== '' && ! /^[.]+$/.test(amount.value)) {
-        amount.value = (Number(amount.value.toString().replace(/[^0-9]/g, '')) - 1).toLocaleString()
-      } 
-    }
-    
-    onMounted(() => {
-      amount.value = store.state.amount
-    })
-    
-    return { amount, addAmount, substractAmount }
-  }
-}
-</script>
+<style>
+.bars { @apply mr-3 mt-2 cursor-pointer hover:scale-[1.1] }
+.bars div { @apply h-0.5 w-6 mb-1.5 bg-white dark:bg-white/75 }
+</style>
