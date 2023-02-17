@@ -62,9 +62,6 @@ const setTheme = (mode) => {
       <h1 class="pb-0 text-xl font-semibold mb-2 drop-shadow inline">Infinity Converter</h1>
       <p class="text-base drop-shadow">A currency converter for quick view and comparison of live current & historical exchange rates between all globally recognized currencies and commodities.</p>
       <p class="text-base mt-1">
-        <a href="http://artisticlogicmk.one/" target="_blank" class="mx-1 drop-shadow hover:underline"><i class="fa fa-globe"></i> artisticlogicmk.one</a>
-      </p>
-      <p class="text-base mt-1">
         <a href="https://github.com/artisticLogicMK/Infinity-Currency-Converter-v2" target="_blank" class="mx-1 drop-shadow hover:underline"><i class="fa fa-github"></i> Github Repo</a>
       </p>
     </div>

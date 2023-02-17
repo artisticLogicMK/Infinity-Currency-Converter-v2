@@ -9,8 +9,10 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
+    "chart.js": "^4.2.1",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
+    "vue-chartjs": "^5.2.0",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

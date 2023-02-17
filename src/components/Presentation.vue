@@ -11,7 +11,6 @@ const credit = ref(false)
     <p class="text-base sm:text-lg pr-2 md:w-80 lg:w-96 lg:text-xl drop-shadow">A currency converter for quick view and comparison of live current & historical exchange rates between all globally recognized currencies and commodities.</p>
     
     <p class="text-base sm:text-lg mb-2 mt-2">
-      <a href="http://artisticlogicmk.one/" target="_blank" class="mx-1 drop-shadow hover:underline"><i class="fa fa-globe"></i> artisticlogicmk.one</a>
       <a href="https://github.com/artisticLogicMK/Infinity-Currency-Converter-v2" target="_blank" class="mx-1 drop-shadow hover:underline"><i class="fa fa-github"></i> Github Repo</a>
     </p>
       
