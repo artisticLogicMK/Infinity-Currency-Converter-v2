@@ -26,7 +26,7 @@ onMounted( async() => {
   
   //convert default currencies and push to store
   await defaults.forEach((currency) => {
-    axios.get("https://api.exchangerate.host/convert?from="+store.state.baseCurrency.code+"&to="+currency.code+"&amount="+store.state.amount)
+    axios.get("http://api.exchangerate.host/convert?access_key="+store.state.api+"&from="+store.state.baseCurrency.code+"&to="+currency.code+"&amount="+store.state.amount)
     .then((res) => {
       let data = Object.assign(currency,{result: res.data.result})
       store.commit('pushConvertedCurrencies', data)
@@ -49,7 +49,7 @@ onMounted( async() => {
 
 
       <Transition
-        enter-active-class="animate__animated animate__flipInX animate__fast"
+        enter-active-class="animate__animated animate__fadeIn animate__fast"
       >
         <AppContainer v-if="loaded"/>
       </Transition>

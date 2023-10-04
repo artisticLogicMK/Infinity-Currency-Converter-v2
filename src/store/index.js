@@ -35,7 +35,9 @@ export default createStore({
     error: false,
 
     //state of warning display when currency select exceeds max allowed
-    currencyMax: false
+    currencyMax: false,
+    
+    api: "80aac063c4965e61946456eb7fc1c149"
   },
   
   getters: {},
@@ -63,7 +65,7 @@ export default createStore({
         if(state.convertedCurrencies.length <= 5) {
           //check if selected currency not alredy in converted list & base currency is not selected
           if(!state.convertedCurrencies.includes(currency)) {
-            axios.get("https://api.exchangerate.host/convert?from="+state.baseCurrency.code+"&to="+currency.code+"&amount="+state.amount)
+            axios.get("http://api.exchangerate.host/convert?access_key="+state.api+"&from="+state.baseCurrency.code+"&to="+currency.code+"&amount="+state.amount)
             .then((res) => {
               let data = Object.assign(currency, {result: res.data.result})
               state.convertedCurrencies.push(data)
@@ -115,7 +117,7 @@ export default createStore({
   actions: {
     async convertRollup(store) {
       await store.state.convertedCurrencies.forEach((currency, i) => {
-        axios.get("https://api.exchangerate.host/convert?from="+store.state.baseCurrency.code+"&to="+currency.code+"&amount="+store.state.amount)
+        axios.get("http://api.exchangerate.host/convert?access_key="+store.state.api+"&from="+store.state.baseCurrency.code+"&to="+currency.code+"&amount="+store.state.amount)
         .then((res) => {
           //store.state.convertedCurrencies[i].result = res.data.result
           currency.result = res.data.result

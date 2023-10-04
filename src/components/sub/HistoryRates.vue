@@ -39,6 +39,24 @@ const expandChart = ref(false)
 const annualData = ref([])
 const chartData = ref({})
 
+//chart configuration
+const chartConfig = {
+  responsive: true,
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        color: '#888' // Change font color for y-axis labels
+      }
+    },
+    x: {
+      ticks: {
+        color: '#888' // Change font color for x-axis labels
+      }
+    }
+  }
+}
+
 /* in onMounted hook, our history data is fetched in async/promise which doesnt have very good browser compatibility
   so watch history data update, then resort by year
 */
@@ -106,10 +124,10 @@ onMounted(() => {
   years.forEach( async (year) => {
     await Promise.all([
       //fetch data for currency rate at start of the year -> begin price of currency rate.
-      axios.get("https://api.exchangerate.host/"+year+begin+"?symbols="+store.state.openHistory.currency.code+"&base="+store.state.baseCurrency.code+"&amount="+store.state.amount+"").then((res) => res.data.rates),
+      axios.get("http://api.exchangerate.host/convert?access_key="+store.state.api+"&to="+store.state.openHistory.currency.code+"&from="+store.state.baseCurrency.code+"&amount="+store.state.amount+"&date="+year+begin).then((res) => res.data.result),
 
       //fetch data for currency rate at end of the year -> close price of currency rate.
-      axios.get("https://api.exchangerate.host/"+year+end+"?symbols="+store.state.openHistory.currency.code+"&base="+store.state.baseCurrency.code+"&amount="+store.state.amount+"").then((res) => res.data.rates),
+      axios.get("http://api.exchangerate.host/convert?access_key="+store.state.api+"&to="+store.state.openHistory.currency.code+"&from="+store.state.baseCurrency.code+"&amount="+store.state.amount+"&date="+year+end).then((res) => res.data.result),
     ])
     .then(([yearstart, yearend]) => {
       //if error present already, set to false
@@ -121,21 +139,15 @@ onMounted(() => {
       let change = null
       let changeType = true
       
-      //final api data result returns e.g {EUR: 0.7687}. so get the key(EUR) and value(0.7687)
-      Object.keys(yearstart).forEach(key => {
-        //check if the key exists & is == target currency,
-        //because result returns random currencies if no data available for that year
-        if(key == store.state.openHistory.currency.code) {
-          startprice = Number(yearstart[key])
-        }
-      })
+      //if no data available for year
+      if(yearstart && yearstart !== undefined) {
+        startprice = Number(yearstart)
+      }
 
       //do thesame for endprice
-      Object.keys(yearend).forEach(key => {
-        if(key == store.state.openHistory.currency.code) {
-          endprice = Number(yearend[key])
-        }
-      })
+      if(yearend && yearend !== undefined) {
+        endprice = Number(yearend)
+      }
       
       //set percentage of the decreased difference btw start year and end year
       let decrease = Math.abs(((endprice - startprice) / startprice) * 100).toFixed(2)
@@ -239,12 +251,14 @@ const formatRates = (value) => {
         <p>This gives a historical reference of how the exchange rate of the currency pair has traded on an annual interval over the last 20 years.</p>
       </div>
       
-
-      <div class="mt-3 w-full overflow-x-auto" v-if="!loading">
-        <div class="dspToggle inline-flex float-right rounded-sm border border-neutral-300 dark:border-white/[.10] mx-3 mb-2">
+      <div class="mt-3 flex justify-end">
+        <div class="dspToggle inline-flex rounded-sm border border-neutral-300 dark:border-white/[.10] mx-3 mb-2">
           <button @click="isTableDisplay = true" :class="{'active': isTableDisplay}">Table</button>
           <button @click="isTableDisplay = false" :class="{'active': !isTableDisplay}">Chart</button>
         </div>
+      </div>
+      
+      <div class="w-full overflow-x-auto" v-if="!loading">
 
         <div v-if="!isTableDisplay" @click.self="expandChart=false" :class="{'fixed top-0 left-0 bg-black/40 w-full h-full px-2': expandChart}">
           <div
@@ -253,9 +267,7 @@ const formatRates = (value) => {
           >
             <Line
               id="my-chart-id"
-              :options="{
-                responsive: true
-              }"
+              :options="chartConfig" 
               :data="chartData"
             />
 
