@@ -37,7 +37,7 @@ export default createStore({
     //state of warning display when currency select exceeds max allowed
     currencyMax: false,
     
-    api: "80aac063c4965e61946456eb7fc1c149"
+    api: "23b7fc33600b9962a6b7880562959667"
   },
   
   getters: {},
